@@ -216,7 +216,7 @@ public:
 
     uint32_t GetWidth() const override { return width; }
     uint32_t GetHeight() const override { return height; }
-    TextureFormat::Enum GetFormat() const override { return format; };
+    //TextureFormat::Enum GetFormat() const override { return format; };
     bool HasMipMaps() const override { return levels > 1; }
     bool IsInverted() const override { return isInverted; }
 
@@ -531,13 +531,9 @@ DXGI_FORMAT ToD3D(TextureFormat::Enum format, bool linearRendering)
 {
     switch (format)
     {
-        case TextureFormat::BGRA8:
+        case TextureFormat::RGBA8:
         {
-            return linearRendering ? DXGI_FORMAT_B8G8R8A8_UNORM_SRGB : DXGI_FORMAT_B8G8R8A8_UNORM;
-        }
-        case TextureFormat::BGRX8:
-        {
-            return linearRendering ? DXGI_FORMAT_B8G8R8X8_UNORM_SRGB : DXGI_FORMAT_B8G8R8X8_UNORM;
+			return linearRendering ? DXGI_FORMAT_R8G8B8A8_UNORM_SRGB : DXGI_FORMAT_R8G8B8A8_UNORM;
         }
         case TextureFormat::R8:
         {
@@ -1260,7 +1256,7 @@ Ptr<RenderTarget> D3D11RenderDevice::CreateRenderTarget(const char* label, uint3
     DX_NAME(viewTex, "%s_TEX_SRV", label);
     DX_RELEASE(colorTex);
 
-    surface->texture = *new D3D11Texture(viewTex, width, height, 1, TextureFormat::BGRA8, false);
+    surface->texture = *new D3D11Texture(viewTex, width, height, 1, TextureFormat::RGBA8, false);
 
     V(mDevice->CreateRenderTargetView(colorTex, 0, &surface->textureRTV));
     DX_NAME(surface->textureRTV, "%s_TEX_RTV", label);
@@ -1333,9 +1329,9 @@ void D3D11RenderDevice::FillCaps(bool sRGB)
     mCaps.dynamicIndicesSize = DYNAMIC_IB_SIZE;
     mCaps.linearRendering = sRGB;
 
-    mCaps.supportedTextureFormats[TextureFormat::BGRA8] = true;
-    mCaps.supportedTextureFormats[TextureFormat::BGRX8] = true;
-    mCaps.supportedTextureFormats[TextureFormat::R8] = true;
+    //mCaps.supportedTextureFormats[TextureFormat::BGRA8] = true;
+    //mCaps.supportedTextureFormats[TextureFormat::BGRX8] = true;
+    //mCaps.supportedTextureFormats[TextureFormat::R8] = true;
 }
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////

@@ -15,17 +15,17 @@ using namespace Noesis;
 using namespace NoesisApp;
 
 
-////////////////////////////////////////////////////////////////////////////////////////////////////
-Ptr<RenderDevice> D3D11Factory::CreateDevice(ID3D11DeviceContext* context, bool sRGB)
+Noesis::Ptr<Noesis::RenderDevice> CreateDevice(ID3D11DeviceContext* context, bool sRGB)
 {
-    return *new D3D11RenderDevice(context, sRGB);
+	return *new D3D11RenderDevice(context, sRGB);
 }
 
-////////////////////////////////////////////////////////////////////////////////////////////////////
-Ptr<Texture> D3D11Factory::WrapTexture(ID3D11Texture2D* texture, uint32_t width, uint32_t height,
-    uint32_t levels, TextureFormat::Enum format, bool isInverted)
+
+Noesis::Ptr<Noesis::Texture> D3D11Factory::WrapTexture(ID3D11Texture2D* texture, uint32_t width,
+	uint32_t height, uint32_t levels, bool isInverted)
 {
-    return D3D11RenderDevice::WrapTexture(texture, width, height, levels, format, isInverted);
+	TextureFormat::Enum format= TextureFormat::RGBA8;
+	return D3D11RenderDevice::WrapTexture(texture, width,height, levels, format, isInverted);
 }
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////

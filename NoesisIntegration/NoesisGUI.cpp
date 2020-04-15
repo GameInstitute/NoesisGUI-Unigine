@@ -24,6 +24,10 @@
 
 #include <UnigineApp.h>
 #include <UnigineInterpreter.h>
+#include <UnigineRenderContext.h>
+#include <UnigineTextures.h>
+#include <UnigineCustomApp.h>
+
 
 using namespace Unigine;
 using namespace Noesis;
@@ -87,23 +91,23 @@ void NoesisGUI::Update()
 	// Scale mouse movement
 	float diffX = (float)((float)width_texture / (float)width_app);
 	float diffY = (float)((float)height_texture / (float)height_app);
-	int mx = App::get()->getMouseX();
-	int my = App::get()->getMouseY();
+	int mx = App::getMouseX();
+	int my = App::getMouseY();
 	float x = (float)mx * diffX;
 	float y = (float)my * diffY;
-	//int mouseX = (float)App::get()->getMouseX() * diff;
+	//int mouseX = (float)App::->getMouseX() * diff;
 	int mouseX = (int)x;
-	//int mouseY = App::get()->getMouseY();
+	//int mouseY = App::->getMouseY();
 	int mouseY = (int)y;
 
 	view->MouseMove(mouseX, mouseY);
 
-	if (!pressed && App::get()->getMouseButtonState(App::BUTTON_LEFT))
+	if (!pressed && App::getMouseButtonState(App::BUTTON_LEFT))
 	{
 		view->MouseButtonDown(mouseX, mouseY, MouseButton_Left);
 		pressed = true;
 	}
-	else if (!App::get()->getMouseButtonState(App::BUTTON_LEFT))
+	else if (!App::getMouseButtonState(App::BUTTON_LEFT))
 	{
 		if (pressed)
 		{
@@ -112,7 +116,7 @@ void NoesisGUI::Update()
 		}
 	}
 
-	//if (App::get()->clearKeyState('j'))
+	//if (App::->clearKeyState('j'))
 	//{
 	//	view->Char('j');
 	//}
@@ -127,7 +131,7 @@ void NoesisGUI::Initialize()
 	Noesis::GUI::SetTextureProvider(MakePtr<LocalTextureProvider>("."));
 	Noesis::GUI::SetFontProvider(MakePtr<LocalFontProvider>("."));
 
-	pDevice = static_cast<ID3D11Device*>(Unigine::App::get()->getD3D11Device());
+	pDevice = static_cast<ID3D11Device*>(Unigine::CustomApp::getD3D11Device());
 	pContext = nullptr;
 	pDevice->GetImmediateContext(&pContext);
 
@@ -141,7 +145,7 @@ void NoesisGUI::Initialize()
 	hud->setLayerBlendFunc(0, Unigine::Gui::BLEND_ONE, Unigine::Gui::BLEND_ONE_MINUS_SRC_ALPHA);
 	gui->setTransparentEnabled(1);
 
-	gui->addChild(hud->getWidget(), Unigine::Gui::ALIGN_OVERLAP);
+	gui->addChild(hud, Unigine::Gui::ALIGN_OVERLAP);
 
 	my_texture = Unigine::Texture::create();
 
@@ -236,16 +240,17 @@ void NoesisGUI::LoadUI(std::string name)
 
 	view = Noesis::GUI::CreateView(xaml);
 	view->SetIsPPAAEnabled(true);
-	view->SetTessellationQuality(TessellationQuality_High);
+	//view->SetTessellationQuality(TessellationQuality_High);
+	view->SetTessellationMaxPixelError(Noesis::TessellationMaxPixelError::HighQuality());
 	view->SetSize(width_texture, height_texture);
 	view->GetRenderer()->Init(device);
 }
 
 void NoesisGUI::Clear()
 {
-	int flags = Unigine::TextureRender::TEXTURE_COLOR | Unigine::TextureRender::COLOR_RGBA8 |
-		Unigine::TextureRender::TEXTURE_DEPTH | Unigine::TextureRender::DEPTH_24S8 |
-		Unigine::TextureRender::MULTISAMPLE_8 | Unigine::Texture::USAGE_RENDER;
+	int flags = Unigine::Texture::TEXTURE_2D | Unigine::Texture::FORMAT_RGBA8 |
+		Unigine::Texture::FORMAT_D16 | Unigine::Texture::FORMAT_D24S8 |
+		Unigine::Texture::MULTISAMPLE_8 | Unigine::Texture::USAGE_RENDER;
 
 	my_texture->create2D(width_texture, height_texture, Unigine::Texture::FORMAT_RGBA8, flags);
 }
